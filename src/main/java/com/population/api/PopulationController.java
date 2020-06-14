@@ -1,25 +1,47 @@
 package com.population.api;
 
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.population.api.apiutilities.ApiFacade;
+import com.population.api.apiutilities.DataParser;
+import com.population.api.configuration.ApplicationConfiguration;
+import com.population.api.model.PopulationEstimate;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
+
+import java.util.ArrayList;
 
 @RestController
 @RequestMapping(path = "/")
 public class PopulationController {
 
     @CrossOrigin(origins = "*")
-    @GetMapping("/hello")
-    public String helloWorld(@RequestParam String teststring){
-        return "This is the test string: " + teststring;
+    @GetMapping("/healthcheck")
+    public String healthCheck(){
+        return "I am healthy!";
     }
 
     @CrossOrigin(origins="*")
     @GetMapping("/populationestimate")
-    public String getPopulationEstimates(){
-        final String requestUrl = "https://api.census.gov/data/2019/pep/population?get=DATE_CODE,DATE_DESC,DENSITY,POP,NAME,STATE&for=region:*&key=aa32a07a49de32f2d38267f826a084a1c3030221";
-        RestTemplate rt = new RestTemplate();
-        Object result = rt.getForObject(requestUrl, Object.class);
-        return null;
+    public ArrayList<PopulationEstimate> getPopulationEstimates(){
+        return parsePopulationApiResponse(ApiFacade.sendGETRequest(ApplicationConfiguration.CensusUri()));
     }
+
+    private String getJsonString(Object o){
+        ObjectMapper om = new ObjectMapper();
+        try {
+            return om.writeValueAsString(o);
+        } catch (Exception e){
+            return "Invalid data, could not create Json.";
+        }
+    }
+
+    private ArrayList<PopulationEstimate> parsePopulationApiResponse(Object response){
+        ArrayList<PopulationEstimate> populationsByRegion = new ArrayList<>();
+        ArrayList<ArrayList<String>> populationsResponse = ((ArrayList<ArrayList<String>>)response);
+        populationsResponse.remove(0); // first item is unneeded metadata.
+        populationsResponse.forEach(regionPopulation -> populationsByRegion.add(new PopulationEstimate(DataParser.extractStringWithRegex(regionPopulation.get(1), ApplicationConfiguration.DateRegex()),
+                                                                                                        Integer.parseInt(regionPopulation.get(3)),
+                                                                                                        regionPopulation.get(4))));
+        return populationsByRegion;
+    }
+
 }
