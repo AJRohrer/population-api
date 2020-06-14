@@ -30,3 +30,5 @@ build/
 
 ### VS Code ###
 .vscode/
+
+/population-ui/vue-population/node_modules/

@@ -8,6 +8,7 @@ import com.population.api.model.PopulationEstimate;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 @RestController
 @RequestMapping(path = "/")
@@ -41,6 +42,7 @@ public class PopulationController {
         populationsResponse.forEach(regionPopulation -> populationsByRegion.add(new PopulationEstimate(DataParser.extractStringWithRegex(regionPopulation.get(1), ApplicationConfiguration.DateRegex()),
                                                                                                         Integer.parseInt(regionPopulation.get(3)),
                                                                                                         regionPopulation.get(4))));
+        Collections.sort(populationsByRegion);
         return populationsByRegion;
     }
 

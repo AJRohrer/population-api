@@ -3,7 +3,7 @@ package com.population.api.model;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.population.api.configuration.ApplicationConfiguration;
 
-public class PopulationEstimate {
+public class PopulationEstimate implements Comparable<PopulationEstimate>{
 
     public String populationDate = ""; //mm/dd/yyyy
     public long populationEstimate = 0; //If the population of countries or the world is ever estimated in the future of this app we want to be able to store a value over 2 billion (int).
@@ -38,5 +38,10 @@ public class PopulationEstimate {
     // Years can be anything between 1000-9999
     private boolean isDateStringValid(String dateToValidate){
         return dateToValidate.matches(ApplicationConfiguration.DateRegex());
+    }
+
+    @Override
+    public int compareTo(PopulationEstimate thatPopulationEstimate){
+        return this.regionDescription.compareTo(thatPopulationEstimate.regionDescription);
     }
 }
