@@ -14,27 +14,21 @@ import java.util.Collections;
 @RequestMapping(path = "/")
 public class PopulationController {
 
+    // Used to test to make sure that tomcat/java are functioning correctly.
     @CrossOrigin(origins = "*")
     @GetMapping("/healthcheck")
     public String healthCheck(){
         return "I am healthy!";
     }
 
+    // Return the data to the client from the Census API
     @CrossOrigin(origins="*")
     @GetMapping("/populationestimate")
     public ArrayList<PopulationEstimate> getPopulationEstimates(){
         return parsePopulationApiResponse(ApiFacade.sendGETRequest(ApplicationConfiguration.CensusUri()));
     }
 
-    private String getJsonString(Object o){
-        ObjectMapper om = new ObjectMapper();
-        try {
-            return om.writeValueAsString(o);
-        } catch (Exception e){
-            return "Invalid data, could not create Json.";
-        }
-    }
-
+    // Organize the response from the Census api into what is required by the client.
     private ArrayList<PopulationEstimate> parsePopulationApiResponse(Object response){
         ArrayList<PopulationEstimate> populationsByRegion = new ArrayList<>();
         ArrayList<ArrayList<String>> populationsResponse = ((ArrayList<ArrayList<String>>)response);

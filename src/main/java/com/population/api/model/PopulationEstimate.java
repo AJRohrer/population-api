@@ -40,6 +40,7 @@ public class PopulationEstimate implements Comparable<PopulationEstimate>{
         return dateToValidate.matches(ApplicationConfiguration.DateRegex());
     }
 
+    // Used to sort list alphabetically
     @Override
     public int compareTo(PopulationEstimate thatPopulationEstimate){
         return this.regionDescription.compareTo(thatPopulationEstimate.regionDescription);

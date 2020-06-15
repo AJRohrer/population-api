@@ -1,0 +1,11 @@
+version: '3'
+
+services:
+  population-api:
+    build: ./
+    ports:
+      - 8080:8080
+  population-ui:
+    build: ./population-ui/vue-population/
+    ports:
+      - 9999:80

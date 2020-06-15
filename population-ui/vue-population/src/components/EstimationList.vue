@@ -32,6 +32,8 @@ export default {
   props: {
     msg: String
   },
+  // Keep all data in allEstimates. Show the filteredEstimates on the DOM.
+  // Only one call to the API is required, not one call per search for faster performance.
   data(){
     return {
       allEstimates:[],
@@ -39,10 +41,12 @@ export default {
       searchterm: ""
     }
   },
+  // Run the getPopulationEstimates method on load of the page
   mounted(){
     this.getPopulationEstimates()
   },
   methods: {
+    // Make a call to the java spring boot api to get the population estimation data
     getPopulationEstimates(){
       axios({method: "GET", "url": "http://localhost:8080/populationestimate"}).then(result => {
         for (var i = 0; i < result.data.length;i++){
@@ -55,14 +59,17 @@ export default {
         }
       })
     },
+
     formatPopulationNumber(numberToFormat){
       return numberToFormat.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
     },
+
     performSearch(){
       console.log("Perform Search Called");
+      // If the search button is clicked and there is nothing in the search bar then populate the list with everything
       if (this.searchterm === ""){
         this.filteredEstimates = this.allEstimates;
-      } else {
+      } else { //filter the list if there is something other than nothing in the search bar
         this.filteredEstimates = []; //clear the array
         console.log(this.allEstimates.length);
         for (var i=0; i < this.allEstimates.length;i++){
@@ -73,6 +80,7 @@ export default {
         }
       }
     },
+
     addEstimateToFilteredList(regionToAdd,populationToAdd,estimatedDateToAdd){
       this.filteredEstimates.push({
         "region": regionToAdd,
