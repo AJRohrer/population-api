@@ -19,7 +19,7 @@ locally follow these instructions:
 1. Make sure that you have docker installed on your machine.
 2. Verify that docker is running Linux containers.
 3. Clone this application to an empty directory.
-4. Once clone use a shell to get to the population-api folder.
+4. Once cloned use a shell to get to the population-api folder.
 5. Run the following command: "docker-compose up"
 6. Once the command is done (it takes a few minutes) navigate to http://localhost:9999 to see
 the application up and running.
